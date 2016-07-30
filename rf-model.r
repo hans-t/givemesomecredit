@@ -18,7 +18,7 @@ clean <- function(data) {
 }
 
 transform <- function(data) {
-  # New MonthlyDebtPayment column replacing DebtRatio
+  # New MonthlyDebtPayment column
   monthly.income <- data$MonthlyIncome
 
   na.income <- is.na(monthly.income)
@@ -29,9 +29,9 @@ transform <- function(data) {
 
   data$MonthlyDebtPayment <- data$DebtRatio * monthly.income
 
+  # Replace NA income with -1.
   monthly.income[na.income] <- -1
   monthly.income[zero.income] <- 0
-
   data$MonthlyIncome <- monthly.income
 
   # Set NA #Dependents to -1
@@ -110,8 +110,8 @@ rf.best <- randomForest(x = x.train,
                         sampsize = sampsize,
                         replace = TRUE,
                         do.trace = do.trace)
-# print(rf.best)
 
+# Get AUC score
 class.prob <- predict(rf.best, type = 'prob')
 rf.auc <- auc(y.train, class.prob[,2])
 print(rf.auc)
