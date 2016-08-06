@@ -49,15 +49,13 @@ def fit_classifier(labels, columns):
     param_grid = {
         'n_estimators': [1500],
         'max_features': [4],
-        'min_samples_leaf': [80, 100, 120, 140, 160],
-        'bootstrap': [True, False],
+        'min_samples_leaf': [140, 142, 145, 150],
+        'bootstrap': [True],
+        'class_weight': ['balanced_subsample', 'balanced'],
+        'criterion': ['gini', 'entropy'],
     }
     cv_generator = StratifiedKFold(y=labels, n_folds=5, shuffle=True)
-    classifier = RandomForestClassifier(
-        random_state=10,
-        verbose=1,
-        class_weight='balanced_subsample',
-    )
+    classifier = RandomForestClassifier(random_state=10, verbose=0)
     grid_search = GridSearchCV(
         classifier,
         param_grid=param_grid,
@@ -65,7 +63,7 @@ def fit_classifier(labels, columns):
         n_jobs=-1,
         cv=cv_generator,
         refit=True,
-        verbose=1,
+        verbose=2,
     )
     grid_search.fit(X=columns, y=labels)
     print('\n' + '*'*78)
