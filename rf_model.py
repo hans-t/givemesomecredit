@@ -47,15 +47,14 @@ def read_data(filename):
 
 def fit_classifier(labels, columns):
     param_grid = {
-        'n_estimators': [1500],
+        'n_estimators': [1300, 1500, 1700, 1900],
         'max_features': [4],
-        'min_samples_leaf': [140, 142, 145, 150],
+        'min_samples_leaf': [140],
         'bootstrap': [True],
-        'class_weight': ['balanced_subsample', 'balanced'],
-        'criterion': ['gini', 'entropy'],
+        'class_weight': ['balanced_subsample'],
     }
     cv_generator = StratifiedKFold(y=labels, n_folds=5, shuffle=True)
-    classifier = RandomForestClassifier(random_state=10, verbose=0)
+    classifier = RandomForestClassifier(random_state=10, verbose=1)
     grid_search = GridSearchCV(
         classifier,
         param_grid=param_grid,
@@ -63,7 +62,7 @@ def fit_classifier(labels, columns):
         n_jobs=-1,
         cv=cv_generator,
         refit=True,
-        verbose=2,
+        verbose=1,
     )
     grid_search.fit(X=columns, y=labels)
     print('\n' + '*'*78)
